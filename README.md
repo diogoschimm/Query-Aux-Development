@@ -81,7 +81,8 @@ where t.name = 'NomeTabela'
 
 ```sql
 select	c.name,
-		'Private _' + c.name + ' As ' + X.nameVbNet +  CASE when c.is_nullable = 1 and x.namevbNet <> 'String' THEN '?' ELSE '' END,
+		'Private _' + c.name + ' As ' + X.nameVbNet +  
+		 CASE when c.is_nullable = 1 and x.namevbNet <> 'String' THEN '?' ELSE '' END,
 		'If Not IsDBNull(dr.Item("'+c.name+'")) Then Me._'+c.name+' = dr.Item("'+c.name+'")',
 		'cmd.Parameters.Add("@' + c.name + '", SqlDbType.' + X.nameSql +
 		CASE when x.namevbNet = 'String' THEN
