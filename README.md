@@ -56,6 +56,39 @@ INSERT X_AUX_TYPES (idSql, nameSql, nameVbNet, nameCSharp) VALUES (243, N'LISTA_
 INSERT X_AUX_TYPES (idSql, nameSql, nameVbNet, nameCSharp) VALUES (243, N'LISTA_INT_STR', NULL, NULL) 
 ```
 
+## Query criar função
+
+```sql
+CREATE FUNCTION TratarNameColumn (@nameProperty AS VARCHAR(100)) RETURNS VARCHAR(100)
+AS
+BEGIN
+
+	declare @t as int = len(@nameProperty)
+	declare @i as int = 2
+
+	declare @strFinal as varchar(100) = Upper(substring(@nameProperty, 1,1))
+
+	while @i <= @t 
+	begin
+
+		declare @letra as varchar(1) = substring(@nameProperty, @i, 1)
+		declare @codigo as int = ASCII(@letra)
+
+		if @codigo >= 65 and @codigo <= 90 begin 
+			set @strFinal = @strFinal + ' ' +  substring(@nameProperty, @i, 1)
+
+		end else begin 
+			set @strFinal = @strFinal +  substring(@nameProperty, @i, 1)
+		end
+
+		set @i = @i + 1
+	end
+
+	RETURN @strFinal 
+
+END
+```
+
 ## Query para Aux Procedures
 
 ```sql
