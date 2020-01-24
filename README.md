@@ -113,10 +113,11 @@ where t.name = 'NomeTabela'
 ## Query para Aux Classes
 
 ```sql
-select	c.name,
+select * from (
+	select	c.name,
 		'Private _' + c.name + ' As ' + X.nameVbNet +  
-		 CASE when c.is_nullable = 1 and x.namevbNet <> 'String' THEN '?' ELSE '' END,
-		'If Not IsDBNull(dr.Item("'+c.name+'")) Then Me._'+c.name+' = dr.Item("'+c.name+'")',
+		 CASE when c.is_nullable = 1 and x.namevbNet <> 'String' THEN '?' ELSE '' END fields,
+		'If Not IsDBNull(dr.Item("'+c.name+'")) Then Me._'+c.name+' = dr.Item("'+c.name+'")' retrieve,
 		'cmd.Parameters.Add("@' + c.name + '", SqlDbType.' + X.nameSql +
 		CASE when x.namevbNet = 'String' THEN
 				', ' + cast(c.max_length as varchar(10))
@@ -130,11 +131,34 @@ select	c.name,
 				').Value = IF(Me._' + c.name + ', DBNull.Value)'     
 			 ELSE
 				').Value = Me._' + c.name
-		END,
-		'<asp:ListItem Text="'+c.name+'" Value="'+c.name+'"></asp:ListItem>' as filtro 
+		END parameters,
+		'<asp:ListItem Text="'+c.name+'" Value="'+c.name+'"></asp:ListItem>' as filters,
+
+		'<asp:BoundField DataField="'+c.name+'" HeaderText="'+
+
+			(case when c.is_identity = 1 then 'ID' else dbo.TratarNameColumn(c.name) end) +
+
+			'" SortExpression="'+c.name+'" ' +
+
+		(case when x.nameVbNet = 'Decimal' then 
+				'DataFormatString="{0:c}">' +char(10) +
+				'	<ItemStyle CssClass="right" />' + char(10) +
+				'	<HeaderStyle CssClass="right" />' + char(10)  +
+				'</asp:BoundField>'
+			 when x.nameVbNet = 'Datetime' then 
+				'DataFormatString="{0:d}" >' +char(10) +
+				'	<ItemStyle CssClass="center" />' + char(10) +
+				'	<HeaderStyle CssClass="center" />' + char(10) +
+				'</asp:BoundField>'
+			 else 
+				' />'  
+			end ) 
+
+		gridView
 
 from sys.columns c
 join sys.tables t on c.object_id = t.object_id
 join X_AUX_TYPES X on c.system_type_id = X.idSql
 where t.name = 'NomeTabela'
+) t
 ```
