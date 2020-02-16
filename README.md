@@ -115,6 +115,7 @@ where t.name = 'NomeTabela'
 ```sql
 select * from (
 	select	c.name,
+		'public ' + X.nameCSharp + (CASE when c.is_nullable = 1 and x.namevbNet <> 'String' THEN '?' ELSE '' END) + ' ' + Upper(SubString( c.name, 1, 1)) + substring(c.name, 2, len(c.name)- 1) + ' { get; set; }' GetSetCSharp,
 		'Private _' + c.name + ' As ' + X.nameVbNet +  
 		 CASE when c.is_nullable = 1 and x.namevbNet <> 'String' THEN '?' ELSE '' END fields,
 		'If Not IsDBNull(dr.Item("'+c.name+'")) Then Me._'+c.name+' = dr.Item("'+c.name+'")' retrieve,
@@ -159,6 +160,6 @@ select * from (
 from sys.columns c
 join sys.tables t on c.object_id = t.object_id
 join X_AUX_TYPES X on c.system_type_id = X.idSql
-where t.name = 'NomeTabela'
+where t.name = 'nomeTabela'
 ) t
 ```
